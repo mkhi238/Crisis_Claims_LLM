@@ -1,8 +1,6 @@
 import pandas as pd
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
-from pathlib import Path
-
 
 def load_fever(save_dir=r"C:\Users\mukun\crisis-claim-analysis\data\raw"):
     save_path = Path(save_dir)
