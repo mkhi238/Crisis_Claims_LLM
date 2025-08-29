@@ -18,13 +18,12 @@ def main():
     df = df.sort_values(['claim', 'prio'])
     df = df.drop_duplicates(subset=["claim"], keep="first")
     df = df.drop('prio', axis = 1).reset_index(drop = True)
-    df = df[df['label'] != 'NOT ENOUGH INFO']
     df.rename(columns={'label': 'label_map'}, inplace = True)
     label_map = {'TRUE': 0, 'FALSE': 1
     }
     df['labels'] = df['label_map'].map(label_map)
     df.rename(columns={'label_map' : 'label_text'}, inplace=True)
-    df = df[['claim', 'label_text', 'labels']]
+    df = df[['claim', 'label_text', 'labels', 'evidence_sentence_id', 'evidence_annotation_id', 'evidence_wiki_url']]
     df.to_csv("fever_cleaned.csv", index=False)
     
 if __name__ == "__main__":
