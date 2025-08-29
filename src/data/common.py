@@ -1,22 +1,19 @@
-from datasets import load_dataset
-import pandas as pd
-from pathlib import Path
 import unicodedata, re
-
-def remove_duplicates(dataset):
-    df = dataset.to_pandas()
-    df = df.drop_duplicates(subset = ['id', 'claim' , 'label'], keep = "first")
-    return df.loc[:,['id', 'label', 'claim']]
 
 def normalize_text(s):
     s = unicodedata.normalize("NFKC", str(s)).strip().lower()
     s = re.sub(r"\s+", " ", s)
     return s
 
-def clean_data(dataset, split_name, canon = None):
-    dataset = remove_duplicates(dataset)
-    dataset['claim'] = dataset['claim'].apply(normalize_text)
-    dataset['label'] = dataset['label'].astype(str).str.lower().map(canon)
-    dataset = dataset.dropna(subset = ['claim', 'label'])
-    dataset['split'] = split_name
-    return dataset
+def clean_data(dataset, split_name, canon = None, text_col = "claim", label_col = "label", id_col = "id"):
+    df = dataset.to_pandas() if hasattr(dataset, "to_pandas") else dataset.copy()
+    rename = {text_col: "claim", label_col: "label"}
+    if id_col in df.columns:
+        rename[id_col] = "id"
+    df = df.rename(columns = rename)
+    df['claim'] = df['claim'].apply(normalize_text)
+    if canon:
+        df['label'] = df['label'].astype(str).str.lower().map(canon)
+    df = df.dropna(subset = ['claim', 'label']).copy()
+    df['split'] = split_name
+    return df
