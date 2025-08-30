@@ -17,3 +17,4 @@ def clean_data(dataset, split_name, canon = None, text_col = "claim", label_col 
     df = df.dropna(subset = ['claim', 'label']).copy()
     df['split'] = split_name
     return df
+

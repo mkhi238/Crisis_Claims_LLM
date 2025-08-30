@@ -1,8 +1,32 @@
 from datasets import load_dataset
 import pandas as pd
-from pathlib import Path
+from common import normalize_text
 
-wiki_dataset = load_dataset("fever", "wiki_pages", split="wikipedia_pages")
+def main():
 
-df = pd.DataFrame(wiki_dataset)
-print(df.head())
+    wiki_dataset = load_dataset("fever", "wiki_pages", split="wikipedia_pages")
+    df = pd.DataFrame(wiki_dataset)
+    print(df.columns)
+    rows = []
+
+    for _, row in df.iterrows():
+        title = row['id']
+        if pd.isna(row['lines']):
+            continue
+        try:
+          for i in row['lines'].split('\n'):
+              if not i.strip():
+                  continue
+              num, line = i.split("\t", 1)
+              line = line.strip()
+              line = normalize_text(line)
+              if line:
+                  rows.append((title, int(num), line))
+        except ValueError:
+            continue
+    
+    df = pd.DataFrame(rows, columns = ['id', 'line', 'text'])
+        
+
+if __name__ == "__main__":
+    main()
