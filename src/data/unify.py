@@ -30,3 +30,7 @@ def main():
   corpus_df.to_parquet(path / "fever_corpus_parquet", index = False)
 
   build_gold_map(evidence_df, json_out=str(path / "fever_gold.json"))
+
+
+if __name__ == "__main__":
+  main()
