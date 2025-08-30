@@ -7,7 +7,7 @@ canon = {'supports': 'TRUE',
          'not enough info': 'NOT ENOUGH INFO',
          'nei': 'NOT ENOUGH INFO'}
 
-def main():
+def build_fever_claim():
     dataset = load_dataset("fever", "v1.0")
     train = clean_data(dataset['train'], 'train', canon, 'claim', 'label', 'id')
     validation = clean_data(dataset['labelled_dev'], 'validation', canon, 'claim', 'label', 'id')
@@ -19,11 +19,9 @@ def main():
     df = df.drop_duplicates(subset=["claim"], keep="first")
     df = df.drop('prio', axis = 1).reset_index(drop = True)
     df.rename(columns={'label': 'label_text'}, inplace = True)
-    label_map = {'TRUE': 0, 'FALSE': 1, 'NOT ENOUGH INFO' : 2
-    }
+    label_map = {'TRUE': 0, 'FALSE': 1, 'NOT ENOUGH INFO' : 2}
     df['labels'] = df['label_text'].map(label_map)
     df = df[['id','split','claim','label_text','labels']]
-    df.to_csv("fever_cleaned.csv", index=False)
+
+    return df
     
-if __name__ == "__main__":
-    main()
