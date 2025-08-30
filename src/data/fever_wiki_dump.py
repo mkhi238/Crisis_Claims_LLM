@@ -3,7 +3,6 @@ import pandas as pd
 from common import normalize_text
 
 def main():
-
     wiki_dataset = load_dataset("fever", "wiki_pages", split="wikipedia_pages")
     df = pd.DataFrame(wiki_dataset)
     print(df.columns)
@@ -25,7 +24,13 @@ def main():
         except ValueError:
             continue
     
-    df = pd.DataFrame(rows, columns = ['id', 'line', 'text'])
+    corpus = pd.DataFrame(rows, columns = ["id","line","text"]).drop_duplicates(subset = ['id', 'line']).reset_index(drop=True)
+
+    corpus.to_parquet(
+        'C:\Users\mukun\crisis-claim-analysis\data\processed', index = False)
+    corpus.to_csv('C:\Users\mukun\crisis-claim-analysis\data\processed', index = False)
+
+
         
 
 if __name__ == "__main__":
